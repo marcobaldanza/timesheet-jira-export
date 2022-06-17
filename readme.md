@@ -16,6 +16,18 @@ Log all work within Jira against your tickets, run this tool and a spreadsheet i
  6. run using 
 	 `python timesheet.py`
 
+### Jira Access Token
+You need to create a [Jira access token](https://id.atlassian.com/manage-profile/security/api-tokens) in order for the code to authenticate with Jira
+
+ 1. Login to Jira
+ 2. Click (top right) cog
+ 3. Select 'Atlassian account settings'
+ 4. Select 'Security'
+ 5. Under **API tokens** select 'Create and manage API tokens'
+ 6. Click 'Create API Token'
+ 7. Give it a label and click 'Create'
+ 8. Copy the token text and paste into your config.conf file
+
 New export will be found in the output folder.
 
 ### Note
