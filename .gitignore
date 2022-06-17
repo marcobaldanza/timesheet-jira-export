@@ -1,5 +1,5 @@
 config.conf
 .vscode
 venv
-template/*
 output/*
+!output/__init__.py
