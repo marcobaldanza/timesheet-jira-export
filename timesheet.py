@@ -1,5 +1,6 @@
 #!/bin/python3
 
+from calendar import week
 import openpyxl
 import configparser
 from jira import JIRA
@@ -28,6 +29,10 @@ class timeSheet:
         self.date = date.today().strftime("%d-%m-%y")
         today = date.today()
         self.start_of_week = today - timedelta(days=today.weekday())
+        self.tuesday = self.start_of_week + timedelta(days=1)
+        self.wednesday = self.start_of_week + timedelta(days=2)
+        self.thursday = self.start_of_week + timedelta(days=3)
+        self.friday = self.start_of_week + timedelta(days=4)
         self.end_of_week = self.start_of_week + timedelta(days=6)
 
         self.jira = JIRA(options=self.jira_options, basic_auth=(
@@ -59,7 +64,6 @@ class timeSheet:
                     # ensure log date is within the last 4 days
                     if logdate.date() >= self.start_of_week:
                         total_time += worklog.timeSpentSeconds / 3600
-                        time_log = worklog.timeSpent
                 self.entries.append([id,label,int(total_time)])
     
     def create_timesheet(self):
@@ -72,18 +76,18 @@ class timeSheet:
         sheet['I29'] = self.date
 
         # week hours table
-        sheet['D16'] = datetime.today() - timedelta(days=4)
+        sheet['D16'] = self.start_of_week
         sheet['E16'] = "7.5"
-        sheet['D17'] = datetime.today() - timedelta(days=3)
+        sheet['D17'] = self.start_of_week + timedelta(days=1)
         sheet['E17'] = "7.5"
-        sheet['D18'] = datetime.today() - timedelta(days=2)
+        sheet['D18'] = self.start_of_week + timedelta(days=2)
         sheet['E18'] = "7.5"
-        sheet['D19'] = datetime.today() - timedelta(days=1)
+        sheet['D19'] = self.start_of_week + timedelta(days=3)
         sheet['E19'] = "7.5"
-        sheet['D20'] = datetime.today()
+        sheet['D20'] = self.start_of_week + timedelta(days=4)
         sheet['E20'] = "7.5"
-        sheet['D21'] = datetime.today() + timedelta(days=1)
-        sheet['D22'] = datetime.today() + timedelta(days=2)
+        sheet['D21'] = self.start_of_week + timedelta(days=5)
+        sheet['D22'] = self.end_of_week
 
         # weekly total
         sheet['I16'] = "37.5"
@@ -92,10 +96,14 @@ class timeSheet:
 
         # main table
         row = 6
+        week_time_total = 0
         for task in self.entries:
             sheet[f'M{row}'] = task[0]
             sheet[f'T{row}'] = task[2]
+            week_time_total += task[2]
             row += 1
+        sheet[f'M{row}'] = "BAU"
+        sheet[f'AE{row}'] = 37.5 - week_time_total
 
 
         xfile.save(join(f'{getcwd()}/output', f'{self.name}-{self.date}-timesheet.xlsx'))

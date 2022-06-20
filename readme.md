@@ -37,5 +37,4 @@ New export will be found in the output folder.
 
 
 ### Todo
- - Add calculation for BAU row
  - Add hours to the correct column depending on task label 
