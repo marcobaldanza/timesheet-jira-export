@@ -46,7 +46,7 @@ class timeSheet:
             if str(singleIssue.fields.assignee) == self.name and singleIssue.fields.labels:
                 try:
                     # label
-                    label = singleIssue.fields.labels[0].replace('-', ' ')
+                    label = singleIssue.fields.labels[0]
                 except IndexError:
                     # No label exists
                     pass
@@ -98,8 +98,9 @@ class timeSheet:
         row = 6
         week_time_total = 0
         for task in self.entries:
+            col_letter = self.find_proj_column(sheet, task[1])
             sheet[f'M{row}'] = task[0]
-            sheet[f'T{row}'] = task[2]
+            sheet[f'{col_letter}{row}'] = task[2]
             week_time_total += task[2]
             row += 1
         sheet[f'M{row}'] = "BAU"
@@ -108,6 +109,11 @@ class timeSheet:
 
         xfile.save(join(f'{getcwd()}/output', f'{self.name}-{self.date}-timesheet.xlsx'))
 
+    def find_proj_column(self, sheet, label):
+        for row_cells in sheet.iter_rows(min_row=4, max_row=4):
+            for cell in row_cells:
+                if label == str(cell.value):
+                    return cell.column_letter
 
 if __name__ == "__main__":
     ts = timeSheet()

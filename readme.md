@@ -32,9 +32,8 @@ New export will be found in the output folder.
 
 ### Note
 
- - The code is looking for a label for all tasks, if there is no label then the Jira task is skipped. This is for future logic of automatically selecting the correct column in the timesheet template.
- - All time will currently be logged under System Review until the logic is added to select the correct column
+ - The code is looking for a label for all tasks, if there is no label then the Jira task is skipped.
+ - Ensure there is a column in the template with the same label as the task(s) you wish to log
 
 
 ### Todo
- - Add hours to the correct column depending on task label 
