@@ -29,10 +29,6 @@ class timeSheet:
         today = date.today()
         self.start_of_week = today - timedelta(days=today.weekday())
         self.end_of_week = self.start_of_week + timedelta(days=6)
-        print("Today: " + str(today))
-        print("Start: " + str(self.start_of_week))
-        print("End: " + str(self.end_of_week))
-
 
         self.jira = JIRA(options=self.jira_options, basic_auth=(
             self.email, self.jira_token))
@@ -62,7 +58,6 @@ class timeSheet:
                     logdate = datetime.strptime(logdate_str, '%Y-%m-%d')
                     # ensure log date is within the last 4 days
                     if logdate.date() >= self.start_of_week:
-                        print(worklog.created)
                         total_time += worklog.timeSpentSeconds / 3600
                         time_log = worklog.timeSpent
                 self.entries.append([id,label,int(total_time)])
