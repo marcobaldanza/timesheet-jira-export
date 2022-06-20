@@ -38,7 +38,5 @@ New export will be found in the output folder.
 
 
 ### Todo
- - Only account for logs added that week
  - Add calculation for BAU row
- - Enable running on any day of the week
  - Add hours to the correct column depending on task label 

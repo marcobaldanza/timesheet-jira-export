@@ -1,3 +1,5 @@
+#!/bin/python3
+
 import openpyxl
 import configparser
 from jira import JIRA
@@ -22,7 +24,15 @@ class timeSheet:
             self.xlsx_template = f"template/{self.config['settings']['xlsx_template']}"
         except KeyError:
             sys.exit("Required key/values: name, jira_token, email, jira_url, xlsx_template")
+        
         self.date = date.today().strftime("%d-%m-%y")
+        today = date.today()
+        self.start_of_week = today - timedelta(days=today.weekday())
+        self.end_of_week = self.start_of_week + timedelta(days=6)
+        print("Today: " + str(today))
+        print("Start: " + str(self.start_of_week))
+        print("End: " + str(self.end_of_week))
+
 
         self.jira = JIRA(options=self.jira_options, basic_auth=(
             self.email, self.jira_token))
@@ -43,9 +53,18 @@ class timeSheet:
                 id = singleIssue.key
                 total_time = 0
                 for worklog in issue.fields.worklog.worklogs:
-                    # time
-                    total_time += worklog.timeSpentSeconds / 3600
-                    time_log = worklog.timeSpent
+                    ## time
+                    # split the datetime object by 'T'
+                    logdate_spl = worklog.created.split('T')
+                    # get just the date from list
+                    logdate_str = logdate_spl[0]
+                    # convert date string to datetime obj
+                    logdate = datetime.strptime(logdate_str, '%Y-%m-%d')
+                    # ensure log date is within the last 4 days
+                    if logdate.date() >= self.start_of_week:
+                        print(worklog.created)
+                        total_time += worklog.timeSpentSeconds / 3600
+                        time_log = worklog.timeSpent
                 self.entries.append([id,label,int(total_time)])
     
     def create_timesheet(self):
