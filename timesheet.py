@@ -70,8 +70,7 @@ class timeSheet:
         xfile = openpyxl.load_workbook(self.xlsx_template)
         sheet = xfile.get_sheet_by_name('Sheet1')
         sheet['D10'] = self.name
-        start_of_the_week = date.today() - timedelta(days=4)
-        sheet['I10'] = start_of_the_week.strftime("%-d-%b")
+        sheet['I10'] = self.start_of_week.strftime("%d-%b")
         sheet['C26'] = self.manager
         sheet['I29'] = self.date
 
