@@ -64,8 +64,9 @@ class timeSheet:
                     # ensure log date is within the last 4 days
                     if logdate.date() >= self.start_of_week:
                         total_time += worklog.timeSpentSeconds / 3600
-                if int(total_time) > 0:
-                    self.entries.append([id,label,int(total_time)])
+                if total_time > 0:
+                    # only append task if time is > 0
+                    self.entries.append([id,label,total_time])
     
     def create_timesheet(self):
         xfile = openpyxl.load_workbook(self.xlsx_template)
