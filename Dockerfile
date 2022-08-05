@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.9
 
 # Update aptitude with new repo
 RUN apt-get update
@@ -7,11 +7,13 @@ RUN apt-get update
 RUN apt-get install -y git virtualenv
 
 # Clone the files into the docker container
-RUN git clone https://github.com/marcobaldanza/timesheet-jira-export.git 
+RUN git clone https://github.com/marcobaldanza/timesheet-jira-export.git
 
 WORKDIR timesheet-jira-export
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install openpyxl
 
 COPY config.conf .
 

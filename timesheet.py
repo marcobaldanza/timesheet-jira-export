@@ -1,10 +1,8 @@
-#!/bin/python3
-
-from calendar import week
 import openpyxl
 import configparser
 from jira import JIRA
 from datetime import date, datetime, timedelta
+from calendar import week
 from os.path import exists, join
 from os import sys, getcwd
 
@@ -43,7 +41,7 @@ class timeSheet:
     def get_issues_by_project(self):
         # Search all issues mentioned against a project name.
         for singleIssue in self.jira.search_issues(jql_str=f'project = {self.jira_project}'):
-            if str(singleIssue.fields.assignee) == self.name and singleIssue.fields.labels:
+            if singleIssue.fields.labels:
                 try:
                     # label
                     label = singleIssue.fields.labels[0]
@@ -62,10 +60,11 @@ class timeSheet:
                     # convert date string to datetime obj
                     logdate = datetime.strptime(logdate_str, '%Y-%m-%d')
                     # ensure log date is within the last 4 days
-                    if logdate.date() >= self.start_of_week:
+                    if logdate.date() >= self.start_of_week and str(worklog.author) == self.name:
                         total_time += worklog.timeSpentSeconds / 3600
                 if total_time > 0:
                     # only append task if time is > 0
+                    print(f"{id}, {label}, {total_time}")
                     self.entries.append([id,label,total_time])
     
     def create_timesheet(self):
@@ -99,6 +98,7 @@ class timeSheet:
         row = 6
         week_time_total = 0
         for task in self.entries:
+            #print(task)
             col_letter = self.find_proj_column(sheet, task[1])
             sheet[f'M{row}'] = task[0]
             sheet[f'{col_letter}{row}'] = task[2]
